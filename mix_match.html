@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mix and Match Outfits</title>
+    <style>
+        .outfit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+        }
+        .outfit img {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Mix and Match Your Outfits</h1>
+
+    <div class="outfit">
+        <div class="tops"  style="margin-right: 20px;">
+            <h2>Tops</h2>
+            <div id="tops-images" style="display: flex;">
+                {% for top_image in top_images %}
+                    <img src="{{ url_for('static', filename='tops/' + top_image) }}">
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+        <div class="bottoms" style="display: flex;">
+            <h2>Bottoms</h2>
+            <div id="bottoms-images" style="display: flex;">
+                {% for bottom_image in bottom_images %}
+                    <img src="{{ url_for('static', filename='bottoms/' + bottom_image) }}">
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+
+</html>

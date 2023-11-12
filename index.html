@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Optimal Outfit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2e8cf; /* Pastel background color */
+            color: #474747; /* Text color */
+            margin: 0;
+            padding: 0;
+        }
+
+        #start-section {
+            text-align: center;
+            margin-top: 20%;
+        }
+
+        #start-button {
+            background-color: #FFC0CB; /* Pastel pink button color */
+            color: #474747;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #upload-section {
+            display: none;
+            /* Additional styling for the upload section goes here */
+        }
+
+        #drag1 {
+            cursor: move;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .column {
+            flex: 1;
+        }
+
+        .large-column{
+            background-image: url("./uploads/girl.png");
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 400px; 
+            height: 800px;
+        }
+
+        .block {
+            margin-top: 120px;
+            width: 250px;
+            height: 200px;
+            background-color: black;
+            display: flex;
+            width: 50%;
+            padding: 10px;
+        }
+
+        .resizable {
+            position: relative;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .resize-handle {
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            position: absolute;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        .top-left {
+            top: 0;
+            left: 0;
+        }
+
+        .top-right {
+            top: 0;
+            right: 0;
+        }
+
+        .bottom-left {
+            bottom: 0;
+            left: 0;
+        }
+
+        .bottom-right {
+            bottom: 0;
+            right: 0;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="start-section">
+        <h1>Welcome to Optimal Outfit</h1>
+        <button id="start-button" onclick="showUpload()">Start</button>
+    </div>
+
+    <div id="upload-section">
+        <div class="container">
+            <div class="column" id="tops-uploaded-images">
+                <h2>Upload Images of Tops</h2>
+                <form id="tops-upload-form" class="upload-form" enctype="multipart/form-data">
+                    <input type="file" id="file-input" name="file" accept="image/*" multiple>
+                    <button type="submit">Upload Top</button>
+                </form>
+
+                <div id="my-tops">
+                    <h2>Tops</h2>
+                    <div id="tops-uploaded-images" style="display: flex; flex-wrap: wrap;" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div>
+            </div>
+
+            <div class="column" id="bottoms-uploaded-images">
+                <h2>Upload Images of Bottoms</h2>
+                <form id="bottoms-upload-form" class="upload-form" enctype="multipart/form-data">
+                    <input type="file" id="file-input" name="file" accept="image/*" multiple>
+                    <button type="submit">Upload Bottom</button>
+                </form>
+
+                <div id="my-bottoms" class="resizable">
+                    <div id="bottoms-uploaded-images" style="display: flex; flex-wrap: wrap;" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                    <div class="resize-handle top-left"></div>
+                    <div class="resize-handle top-right"></div>
+                    <div class="resize-handle bottom-left"></div>
+                    <div class="resize-handle bottom-right"></div>
+                </div>
+
+                <!-- <div id="my-bottoms">
+                    <h2>Bottoms</h2>
+                    <div id="bottoms-uploaded-images" style="display: flex; flex-wrap: wrap;" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                </div> -->
+            </div>
+
+            <div class="large-column" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="block"></div>
+                <br>
+                <div class="block" style="margin: 20px; height: 400px; width: 50%; padding: 10px;"></div>
+            </div>
+        </div>
+	</div>
+    
+    <script>
+        const image = document.getElementById('resizable-image');
+        const topLeft = document.querySelector('.top-left');
+        const topRight = document.querySelector('.top-right');
+        const bottomLeft = document.querySelector('.bottom-left');
+        const bottomRight = document.querySelector('.bottom-right');
+        let startX, startY, startWidth, startHeight;
+
+        function initResize(e) {
+        e.preventDefault();
+        startX = e.clientX;
+        startY = e.clientY;
+        startWidth = parseInt(document.defaultView.getComputedStyle(image).width, 10);
+        startHeight = parseInt(document.defaultView.getComputedStyle(image).height, 10);
+        document.documentElement.addEventListener('mousemove', resize);
+        document.documentElement.addEventListener('mouseup', stopResize);
+        }
+
+        function resize(e) {
+        const newWidth = startWidth + (e.clientX - startX);
+        const newHeight = startHeight + (e.clientY - startY);
+        image.style.width = `${newWidth}px`;
+        image.style.height = `${newHeight}px`;
+        }
+
+        function stopResize() {
+        document.documentElement.removeEventListener('mousemove', resize);
+        document.documentElement.removeEventListener('mouseup', stopResize);
+        }
+
+        topLeft.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        initResize(e);
+        });
+        topRight.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        initResize(e);
+        });
+        bottomLeft.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        initResize(e);
+        });
+        bottomRight.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        initResize(e);
+        });
+
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            const img = document.getElementById(data).cloneNode(true);
+            img.id = ""; // Remove the ID to avoid duplicates
+            ev.target.appendChild(img);
+        }
+
+        function navigateToMixMatch() {
+            window.location.assign("mix_match.html");
+        }    
+
+        function showUpload() {
+            document.getElementById('start-section').style.display = 'none';
+            document.getElementById('upload-section').style.display = 'block';
+
+            const uploadTopForms = document.getElementById('tops-upload-form');
+
+            // Iterate through tops form and add event listeners
+            uploadTopForms.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const images = formData.getAll('file');
+                // Pass the form ID for identification
+                topImageProcessing(images, this.id);
+            });
+
+            const uploadBottomForms = document.getElementById('bottoms-upload-form');
+
+            // Iterate through bottoms form and add event listeners
+            uploadBottomForms.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const images = formData.getAll('file');
+                // Pass the form ID for identification
+                bottomImageProcessing(images, this.id);
+            });
+
+            function topImageProcessing(images) {
+                const imageDisplay = document.getElementById('tops-uploaded-images');
+                const imageArray = [];
+
+
+                images.forEach(image => {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(image);
+                    img.style.maxWidth = '200px'; // Maximum width
+                    img.style.maxHeight = '200px'; // Maximum height
+                    img.style.width = 'auto'; // Allow width to adjust based on max width
+                    img.style.height = 'auto'; // Allow height to adjust based on max height
+                    img.style.margin = '5px'; // Adjust margin as needed for spacing
+                    img.draggable = true;
+                    img.ondragstart = drag;
+                    //img.id = "drag1";
+                    imageArray.push(img);
+                    img.id="resizable-image"
+                });
+
+                imageArray.forEach(img => {
+                    imageDisplay.appendChild(img);
+                });
+            }
+
+            function bottomImageProcessing(images) {
+                const imageDisplay = document.getElementById('bottoms-uploaded-images');
+                const imageArray = [];
+
+
+                images.forEach(image => {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(image);
+                    img.style.maxWidth = '200px'; // Maximum width
+                    img.style.maxHeight = '200px'; // Maximum height
+                    img.style.width = 'auto'; // Allow width to adjust based on max width
+                    img.style.height = 'auto'; // Allow height to adjust based on max height
+                    img.style.margin = '5px'; // Adjust margin as needed for spacing
+                    img.draggable = true;
+                    img.ondragstart = drag;
+                    //img.id = "drag1";
+                    imageArray.push(img);
+                    img.id="resizable-image"
+                });
+
+                imageArray.forEach(img => {
+                    imageDisplay.appendChild(img);
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>
